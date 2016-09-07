@@ -1,0 +1,23 @@
+---
+### Autore : Ali
+### Date: 7/09/216
+### Purpose: Update the ssh and console logon banner
+### NOTE: This script is for Red Hat and CentOS Host with sudo and sys_admin default password #########
+
+- hosts: 192.168.14.50
+  remote_user: root
+  vars:
+    Local_folder: /home/sys_admin/ansible/deploy/Banner_Update/files/
+  tasks:
+      - name: Copying issue to hosts
+        copy: src={{ Local_folder }}/issue dest=/etc/issue owner=root group=root mode=644
+      - name: Copying issue.net to hosts
+        copy: src={{ Local_folder }}/issue.net dest=/etc/issue.net owner=root group=root mode=644
+      - name: Copying motd to hosts
+        copy: src={{ Local_folder }}/motd dest=/etc/motd owner=root group=root mode=644
+      - name: Copying banner to hosts
+        copy: src={{ Local_folder }}/banner dest=/etc/banner owner=root group=root mode=644
+      - name: Updateing banner setting in the sshd_config files
+        lineinfile: dest=/etc/ssh/sshd_config state=present line="Banner /etc/banner"
+      - name: restarting sshd service to make banner active
+        service: name=sshd state=restarted
